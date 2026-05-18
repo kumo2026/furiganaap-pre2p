@@ -1,1 +1,1 @@
-# furigana-word-quiz
+# furiganaap-pre2p
