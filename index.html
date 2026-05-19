@@ -2768,10 +2768,9 @@ const evolutionData = {
         for (let stage of tree) { if (uData.totalCorrect >= stage.req) currentStage = stage; }
         return currentStage;
     }
-
-function showUserSelectionScreen() {
-    // コンテナのクラスを標準（背景白・余白あり）にリセット
-    appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-white relative overflow-hidden pb-16";
+    function showUserSelectionScreen() {
+    // コンテナのクラスを薄紫色にリセット
+    appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-app-purple relative overflow-hidden pb-16";
     
     let userListHtml = '';
     const userNames = Object.keys(allUsersData);
@@ -2989,7 +2988,6 @@ function shareOnX() {
 function shareOnInstagram() {
     alert("📸 Instagramシェア方法：\n\nこの結果画面を「スクリーンショット（パシャッ）」と撮影して、ストーリーズや投稿に貼り付けてシェアしてね！🌟");
 }
-
 function showResultScreen() {
     // 背景を真っ白（bg-white）に変更
     appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-white relative overflow-hidden";
@@ -2998,12 +2996,12 @@ function showResultScreen() {
     <div class="px-4 pt-4 pb-24 flex flex-col items-center h-screen max-h-screen w-full animate-pop justify-between">
         
         <div class="w-full text-center mt-1">
-            <!-- ルビの書き方をシンプルにして表示崩れを防止 -->
+            <!-- ルビを小さく（0.45倍）、目立たない薄いグレー（#94a3b8）に調整 -->
             <h2 class="text-3xl font-black text-slate-700 tracking-widest mb-1">
-                <ruby>結果発表<rt>けっかはっぴょう</rt></ruby>
+                <ruby>結果発表<rt style="font-size: 0.45em; color: #94a3b8; font-weight: normal; tracking: normal;">けっかはっぴょう</rt></ruby>
             </h2>
             <div class="text-lg font-bold text-slate-500 mt-2">
-                ${currentScore} / 10 <ruby>問正解<rt>もんせいかい</rt></ruby>！
+                ${currentScore} / 10 <ruby>問正解<rt style="font-size: 0.45em; color: #94a3b8; font-weight: normal; tracking: normal;">もんせいかい</rt></ruby>！
             </div>
         </div>
         
@@ -3050,7 +3048,7 @@ function showResultScreen() {
         </div>
 
     </div>`;
-}
+}s
 
 window.onload = () => { showUserSelectionScreen(); };
 </script>
