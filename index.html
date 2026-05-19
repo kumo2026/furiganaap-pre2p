@@ -11,15 +11,15 @@
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* アプリ全体の基本フォントを M PLUS Rounded 1c に設定 */
-        body, button, input, select, textarea, h1, h2, p, span, div {
-            font-family: 'M PLUS Rounded 1c', "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", sans-serif !important;
-        }
+       /* アプリ全体の基本フォント設定（!importantを削除） */
+body, button, input, select, textarea, h1, h2, p, span, div {
+    font-family: 'M PLUS Rounded 1c', "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", sans-serif;
+}
 
-        /* 英単語と選択肢ボタンの中身は、読みやすさ（Sans-serif系）を最優先 */
-        .readable-eng-word, .readable-choice, ruby, rt {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-        }
+/* 英単語と選択肢の読みやすさ優先設定（余計なフォント名を削りスッキリに） */
+.readable-eng-word, .readable-choice, ruby, rt {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
         @keyframes popIn {
             0% { transform: scale(0.5); opacity: 0; }
@@ -47,8 +47,8 @@
     </style>
 </head>
 <body class="bg-slate-50">
-    <div id="app" class="max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-white relative overflow-hidden">
-    </div>
+<div id="app" class="max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-white relative overflow-hidden pb-16">
+</div>
 <script>
    
 // 【データ定義】
@@ -2704,7 +2704,6 @@ const lv3 = [
 
 ];
 
-
 const allWordData = [
     ...lv1.map(w => ({ ...w, level: 1 })),
     ...lv2.map(w => ({ ...w, level: 2 })),
@@ -2771,9 +2770,12 @@ const evolutionData = {
     }
 
 function showUserSelectionScreen() {
-    appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-app-purple relative overflow-hidden";
+    // コンテナのクラスを標準（背景白・余白あり）にリセット
+    appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-white relative overflow-hidden pb-16";
+    
     let userListHtml = '';
     const userNames = Object.keys(allUsersData);
+
     if (userNames.length > 0) {
         userNames.forEach(name => {
             const uData = allUsersData[name];
@@ -2811,7 +2813,8 @@ function loginUser(name) { currentUser = name; getUserData().eggType === null ? 
 function deleteUser(name) { if(confirm('消しますか？')){ delete allUsersData[name]; saveData(); showUserSelectionScreen(); } }
 
 function showEggSelectionScreen() {
-    appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-app-cream relative overflow-hidden";
+    appContainer.className = "max-w-2xl mx-auto min-h-screen flex flex-col shadow-2xl bg-app-cream relative overflow-hidden pb-16";
+
     appContainer.innerHTML = `
     <div class="p-8 min-h-screen flex flex-col items-center justify-center animate-pop w-full">
         <h1 class="text-2xl font-medium text-[#634730] mb-8 text-center">あいぼうをえらぼう！</h1>
@@ -2859,12 +2862,14 @@ function startGame() {
     if (!uData.mistakes) uData.mistakes = {};
 
     let targetLevel = 1;
-    for (let l = 1; l <= 3; l++) {
-        const levelWords = allWordData.filter(w => w.level === l);
-        const hasRemaining = levelWords.some(w => !uData.totalCorrectPerWord[w.word]);
-        targetLevel = l;
-        if (hasRemaining) break; 
+for (let l = 1; l <= 3; l++) {
+    const levelWords = allWordData.filter(w => w.level === l);
+    const hasRemaining = levelWords.some(w => !uData.totalCorrectPerWord[w.word]);
+    if (hasRemaining) {
+        targetLevel = l; // 未クリアのレベルを見つけた時だけ代入して抜ける
+        break;
     }
+}
 
     let priorityPool = allWordData.filter(w => {
         if (w.level !== targetLevel) return false;
@@ -2992,10 +2997,12 @@ function showResultScreen() {
     <div class="px-4 pt-4 pb-24 flex flex-col items-center h-screen max-h-screen w-full animate-pop justify-between">
         
         <div class="w-full text-center mt-1">
-            <h2 class="text-3xl font-medium text-[#166534] tracking-widest font-sans mb-1">結果発表</h2>
-            <div class="text-lg font-medium text-slate-500">
-                ${currentScore} / 10 問正解！
-            </div>
+            <h2 class="text-3xl font-medium text-slate-700 tracking-widest font-sans mb-1">
+    <ruby>結果発表<rt class="text-[10px] tracking-normal block -mb-1 text-slate-400 font-bold">けっかはっぴょう</rt></ruby>
+</h2>
+<div class="text-lg font-medium text-slate-500">
+    ${currentScore} / 10 <ruby>問正解<rt class="text-[10px] tracking-normal block -mb-1 text-slate-400 font-bold">もんせいかい</rt></ruby>！
+</div>
         </div>
         
         <div class="w-full max-w-md mt-0 mb-2 flex-1 flex flex-col justify-center space-y-1">
@@ -3004,10 +3011,13 @@ function showResultScreen() {
                 const mark = isCorrect ? '◯' : '✕';
                 const boxBg = isCorrect ? 'bg-emerald-50/80 border-emerald-200' : 'bg-rose-50/80 border-rose-200';
 
-                let correctText = q.choices[q.answer];
-                if (correctText.includes('<br>')) {
-                    correctText = correctText.split('<br>')[0];
-                }
+                // allWordData(元のデータ)から、シャッフルされていない正しい正解テキストを取得する
+const originalWord = allWordData.find(w => w.word === q.word);
+let correctText = originalWord ? originalWord.choices[originalWord.answer] : q.choices[q.answer];
+
+if (correctText.includes('<br>')) {
+    correctText = correctText.split('<br>')[0];
+}
 
                 return `
                     <div class="px-4 py-1.5 border rounded-xl flex items-center justify-between text-base bg-white ${boxBg}">
@@ -3062,27 +3072,36 @@ window.onload = () => { showUserSelectionScreen(); };
         </a>
     </div>
 
-    <!-- ② プライバシーポリシー（これで達成しています！） -->
+<!-- プライバシーポリシー -->
     <div style="margin-bottom: 15px;">
         <p style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #333;">プライバシーポリシー</p>
         <p>当アプリでは、利用者の個人情報を不正に取得・収集することは一切ありません。また、クイズの成績などのデータは利用者の端末内にのみ保存され、外部のサーバーに送信されることはありません。安心してご利用ください。</p>
-    </div>
+    </div> <!-- ← 正しく閉じました -->
 
     <p style="text-align: center; margin-top: 20px; font-size: 11px;">&copy; 2026 ふりがな英単語アプリ</p>
-</div>
+</div> <!-- ← settings-area を閉じました -->
 
 <!-- ⚙️ 表示・非表示を切り替えるためのJavaScriptプログラム -->
 <script>
 function toggleSettings() {
     var area = document.getElementById("settings-area");
     if (area.style.display === "none") {
-        area.style.display = "block"; // クリックされたら表示する
-        // 表示された時に一番下まで自動スクロールすると親切です
+        area.style.display = "block";
         area.scrollIntoView({ behavior: 'smooth' });
     } else {
-        area.style.display = "none";  // もう一度クリックされたら隠す
+        area.style.display = "none";
     }
 }
 </script>
+
+<!-- 画面最下部に固定される広告表示エリア -->
+
+<!-- 画面最下部に固定される広告表示エリア -->
+<div class="fixed bottom-0 left-0 w-full flex justify-center bg-white/90 backdrop-blur-sm py-1 border-t border-slate-200 z-50">
+    <div id="admax-container" class="w-[320px] h-[50px] flex items-center justify-center bg-slate-100 text-[10px] text-slate-400 rounded">
+        <!-- 忍者AdMaxのコード -->
+        <script src="https://adm.shinobi.jp/s/c5d55e23d00d7c1ec52248cae36791dc"></script>
+    </div>
+</div>
 </body>
 </html>
