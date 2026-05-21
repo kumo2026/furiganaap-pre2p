@@ -705,7 +705,7 @@ const lv1 = [
       "<ruby>目標<rt>もくひょう</rt></ruby>",
       "<ruby>才能<rt>さいのう</rt></ruby><br><span class='text-sm md:text-base text-slate-500 font-normal mt-1'>（すごいちから）</span>",
       "<ruby>習慣<rt>しゅうかん</rt></ruby><br><span class='text-sm md:text-base text-slate-500 font-normal mt-1'>（いつもすること）</span>",
-      "<ruby>期待<rt>きたい</rt></ruby>"
+      "<ruby>期待<rt>きたい</rt></ruby><br><span class='text-sm md:text-base text-slate-500 font-normal mt-1'>（たのしみにする）</span>"
     ],
     "answer": 2
   },
@@ -3097,23 +3097,40 @@ function toggleSettings() {
     }
 }
 </script>
-<!-- 画面最下部に固定される広告表示エリア（全端末最適化版） -->
+<!-- 画面最下部に固定される広告表示エリア（全端末最適化版・バグ修正済み） -->
 <div class="fixed bottom-0 left-0 w-full flex justify-center bg-white/95 backdrop-blur-sm py-1.5 border-t border-slate-200 z-50">
     <div id="admax-container" class="relative w-[320px] h-[50px] md:w-[728px] md:h-[90px] flex items-center justify-center bg-slate-100 text-[10px] text-slate-400 rounded overflow-hidden">
+        
         <!-- 💡 クローラー対策：JSが広告を描画しなかった場合のみ裏側のテキストが見える状態にします -->
         <span class="absolute inset-0 flex items-center justify-center bg-slate-50 text-slate-400 select-none z-0">広告掲載エリア</span>
         
-        <div class="relative z-10 w-full h-full flex items-center justify-center">
-            <script>
-                // 画面の横幅が 768px 以上（iPadやPC）かどうかを判定
-                if (window.innerWidth >= 768) {
-                    // 🖥️【PC・iPad】ちょうど良かった「レスポンシブ広告」を表示
-                    document.write('<script src="https://adm.shinobi.jp/s/8f186e50618777d327eb9522c0bda4e"><\/script>');
-                } else {
-                    // 📱【スマホ】元通りのちょうど良い「320x50広告」を表示
-                    document.write('<script src="https://adm.shinobi.jp/s/c5d55e23d00d7c1ec52248cae36791dc"><\/script>');
-                }
-            </script>
+        <!-- 💡 広告スクリプトを安全に注入するための枠 -->
+        <div id="ad-target" class="relative z-10 w-full h-full flex items-center justify-center"></div>
+    </div>
+</div>
+
+<script>
+    // 画面が読み込まれたら実行
+    window.addEventListener('DOMContentLoaded', function() {
+        var adTarget = document.getElementById('ad-target');
+        if (!adTarget) return;
+
+        // 新しいスクリプトタグを作成
+        var adScript = document.createElement('script');
+        
+        // 画面の横幅が 768px 以上（iPadやPC）かどうかを判定してURLを切り替える
+        if (window.innerWidth >= 768) {
+            // 🖥️【PC・iPad】レスポンシブ広告
+            adScript.src = "https://adm.shinobi.jp/s/8f186e50618777d327eb9522c0bda4e";
+        } else {
+            // 📱【スマホ】320x50広告
+            adScript.src = "https://adm.shinobi.jp/s/c5d55e23d00d7c1ec52248cae36791dc";
+        }
+
+        // 用意した枠（#ad-target）の中に、広告スクリプトを安全に追加して実行させる
+        adTarget.appendChild(adScript);
+    });
+</script>
         </div>
     </div>
 </div>
