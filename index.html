@@ -2852,7 +2852,6 @@ function showStartScreen() {
         <button onclick="startGame()" class="w-full bg-teal-500 hover:bg-teal-600 border-b-4 border-teal-700 text-white font-black py-4 rounded-2xl text-xl shadow-md transform active:scale-95 transition">しゅつげき（10問）</button>
     </div>`;
 }
-
 function startGame() {
     if (typeof allWordData === 'undefined') return;
 
@@ -2860,42 +2859,73 @@ function startGame() {
     if (!uData.totalCorrectPerWord) uData.totalCorrectPerWord = {};
     if (!uData.mistakes) uData.mistakes = {};
 
-    let targetLevel = 1;
-for (let l = 1; l <= 3; l++) {
-    const levelWords = allWordData.filter(w => w.level === l);
-    const hasRemaining = levelWords.some(w => !uData.totalCorrectPerWord[w.word]);
-    if (hasRemaining) {
-        targetLevel = l; // 未クリアのレベルを見つけた時だけ代入して抜ける
-        break;
-    }
-}
-
-    let priorityPool = allWordData.filter(w => {
-        if (w.level !== targetLevel) return false;
-        const correctCount = uData.totalCorrectPerWord[w.word] || 0;
-        const mistakeCount = uData.mistakes[w.word] || 0;
-        return correctCount === 0 || mistakeCount > 0;
-    });
-
-    let nextLevelPool = allWordData.filter(w => w.level > targetLevel);
-
-    let masteredPool = allWordData.filter(w => 
-        w.level === targetLevel && (uData.totalCorrectPerWord[w.word] || 0) > 0 && (uData.mistakes[w.word] || 0) === 0
-    );
+    // 【判定】全レベルのすべての単語を、一度でも正解したことがあるか
+    const isAllCleared = allWordData.every(w => (uData.totalCorrectPerWord[w.word] || 0) > 0);
 
     let selection = [];
-    selection = shuffleArray(priorityPool).slice(0, 10);
 
-    if (selection.length < 10) {
-        const extraNext = shuffleArray(nextLevelPool).filter(w => !selection.includes(w)).slice(0, 10 - selection.length);
-        selection = [...selection, ...extraNext];
+    if (isAllCleared) {
+        // ==========================================
+        // ① 全レベルクリア後：完全にランダムな復習モード
+        // ==========================================
+        selection = shuffleArray(allWordData).slice(0, 10);
+
+    } else {
+        // ==========================================
+        // ② 通常プレイモード
+        // ==========================================
+        
+        // 現在挑戦中のターゲットレベルを決定（未正解が残っている最初のレベル）
+        let targetLevel = 1;
+        for (let l = 1; l <= 3; l++) {
+            const levelWords = allWordData.filter(w => w.level === l);
+            const hasRemaining = levelWords.some(w => !uData.totalCorrectPerWord[w.word]);
+            if (hasRemaining) {
+                targetLevel = l;
+                break;
+            }
+        }
+
+        // A. 最優先プール
+        // ・レベルに関係なく、ミスが1回以上記録されている「苦手な単語」
+        // ・現在のターゲットレベル内の「まだ一度も正解していない単語」
+        let priorityPool = allWordData.filter(w => {
+            const isMistakeAnywhere = (uData.mistakes[w.word] || 0) > 0;
+            const isUnansweredInCurrent = w.level === targetLevel && !(uData.totalCorrectPerWord[w.word] > 0);
+            return isMistakeAnywhere || isUnansweredInCurrent;
+        });
+
+        // B. 次レベルプール（現在のターゲットレベルより上の単語）
+        let nextLevelPool = allWordData.filter(w => w.level > targetLevel);
+
+        // C. クリア済みプール（復習用：ターゲットレベル以下で、正解実績があり、現在ミスがない単語）
+        let masteredPool = allWordData.filter(w => 
+            w.level <= targetLevel && 
+            (uData.totalCorrectPerWord[w.word] || 0) > 0 && 
+            (uData.mistakes[w.word] || 0) === 0
+        );
+
+        // 1. まず最優先プール（現在のレベルの未正解＋全レベルの苦手）から最大10問選出
+        selection = shuffleArray(priorityPool).slice(0, 10);
+
+        // 2. 10問に満たない場合、上のレベルから補填
+        if (selection.length < 10) {
+            const extraNext = shuffleArray(nextLevelPool)
+                .filter(w => !selection.some(s => s.word === w.word)) // 重複防止
+                .slice(0, 10 - selection.length);
+            selection = [...selection, ...extraNext];
+        }
+
+        // 3. それでも10問に満たない場合、クリア済みの単語から補填
+        if (selection.length < 10) {
+            const extraMastered = shuffleArray(masteredPool)
+                .filter(w => !selection.some(s => s.word === w.word)) // 重複防止
+                .slice(0, 10 - selection.length);
+            selection = [...selection, ...extraMastered];
+        }
     }
 
-    if (selection.length < 10) {
-        const extraMastered = shuffleArray(masteredPool).filter(w => !selection.includes(w)).slice(0, 10 - selection.length);
-        selection = [...selection, ...extraMastered];
-    }
-
+    // 最後に全体をシャッフルして出題用配列にセット
     currentSessionWords = shuffleArray(selection);
     currentQuestionIndex = 0; 
     currentScore = 0; 
