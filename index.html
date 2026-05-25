@@ -2701,13 +2701,171 @@ const lv3 = [
     ],
     "answer": 0
   }
+]; // ← ここで product を含む前の配列が一度閉じられています
 
-];
-
+// ─── 【修正箇所】 ───
+// 新しいデータを「allWordData」という一つの大きな配列にまとめる場合、
+// 新しく作ったデータもすべて [ ] で囲んで配列の形にし、それを展開（...）して結合させるのが一番安全で綺麗です。
 const allWordData = [
     ...lv1.map(w => ({ ...w, level: 1 })),
     ...lv2.map(w => ({ ...w, level: 2 })),
-    ...lv3.map(w => ({ ...w, level: 3 }))
+    ...lv3.map(w => ({ ...w, level: 3 })),
+    
+    // 生成した新しいデータをここに綺麗に並べます（各データの末尾の「,」を忘れずに！）
+    {
+      "word": "result",
+      "level": 2,
+      "choices": [
+        "<ruby>原因<rt>げんいん</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（わけ/りゆう）</span>",
+        "<ruby>結果<rt>けっか</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（あとにのこること/おわり）</span>",
+        "<ruby>計画<rt>けいかく</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（これからやることのよてい）</span>",
+        "<ruby>目標<rt>もくひょう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（めざすところ）</span>"
+      ],
+      "answer": 1
+    },
+    {
+      "word": "custom",
+      "level": 1,
+      "choices": [
+        "<ruby>秘密<rt>ひみつ</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（だれにもいわないこと）</span>",
+        "<ruby>規則<rt>きそく</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（みんなのきまりごと）</span>",
+        "<ruby>法律<rt>ほうりつ</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（くにのルール）</span>",
+        "<ruby>習慣<rt>しゅうかん</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（いつもすること/いつものくせ）</span>"
+      ],
+      "answer": 3
+    },
+    {
+      "word": "emerge",
+      "level": 3,
+      "choices": [
+        "<ruby>現れる<rt>あらわれる</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（きゅうにみえてくること）</span>",
+        "<ruby>消え去る<rt>きえさる</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（なくなってみえなくなる）</span>",
+        "<ruby>移動する<rt>いどうする</rt></ruby><br>",
+        "<ruby>変形する<rt>へんけいする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（かたちがかわること）</span>"
+      ],
+      "answer": 0
+    },
+    {
+      "word": "translate",
+      "level": 2,
+      "choices": [
+        "<ruby>要約する<rt>ようやくする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（みじかくまとめる）</span>",
+        "<ruby>朗読する<rt>ろうどくする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（こえにだしてよむ）</span>",
+        "<ruby>翻訳する<rt>ほんやくする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（べつのことばになおす）</span>",
+        "<ruby>記述する<rt>きじゅつする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（ぶんしょうにかきとめる）</span>"
+      ],
+      "answer": 2
+    },
+    {
+      "word": "aim",
+      "level": 2,
+      "choices": [
+        "<ruby>目指す<rt>めざす</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（そこへむかってすすむ）</span>",
+        "<ruby>諦める<rt>あきらめる</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（とちゅうでやめる）</span>",
+        "<ruby>逃げ出す<rt>にげだす</rt></ruby>",
+        "<ruby>振り返る<rt>ふりかえる</rt></ruby>"
+      ],
+      "answer": 0
+    },
+    {
+      "word": "protest",
+      "level": 3,
+      "choices": [
+        "<ruby>賛成する<rt>さんせいする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（いいよとみとめる）</span>",
+        "<ruby>降伏する<rt>こうふくする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（まけましたとあやまる）</span>",
+        "<ruby>沈黙する<rt>ちんもくする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（なにもしゃべらない）</span>",
+        "<ruby>抗議する<rt>こうぎする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（ちがうといいかえすこと）</span>"
+      ],
+      "answer": 3
+    },
+    {
+      "word": "threaten",
+      "level": 3,
+      "choices": [
+        "<ruby>励ます<rt>はげます</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（がんばれとおうえんする）</span>",
+        "<ruby>脅かす<rt>おびやかす</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（こわがらせる/せまる）</span>",
+        "<ruby>慰める<rt>なぐさめる</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（やさしくこえをかける）</span>",
+        "<ruby>賞賛する<rt>しょうさんする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（すごいとほめること）</span>"
+      ],
+      "answer": 1
+    },
+    {
+      "word": "indicate",
+      "level": 2,
+      "choices": [
+        "<ruby>隠す<rt>かくす</rt></ruby>",
+        "<ruby>見失う<rt>みうしなう</rt></ruby>",
+        "<ruby>指し示す<rt>さししめす</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（これだよとおしえる）</span>",
+        "<ruby>見渡す<rt>みわたす</rt></ruby>"
+      ],
+      "answer": 2
+    },
+    {
+      "word": "trade",
+      "level": 3,
+      "choices": [
+        "<ruby>貿易<rt>ぼうえき</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（がいこくとものでやりとりする）</span>",
+        "<ruby>農業<rt>のうぎょう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（やさいやおこめをつくること）</span>",
+        "<ruby>探検<rt>たんけん</rt></ruby>",
+        "<ruby>観光<rt>かんこう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（りょこうしてたのしむこと）</span>"
+      ],
+      "answer": 0
+    },
+    {
+      "word": "compete",
+      "level": 2,
+      "choices": [
+        "<ruby>協力する<rt>きょうりょくする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（みんなでちからをあわせる）</span>",
+        "<ruby>競い合う<rt>きそいあう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（だれがいちばんかしょうぶする）</span>",
+        "<ruby>仲直りする<rt>なかなおりする</rt></ruby>",
+        "<ruby>降参する<rt>こうさんする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（あきらめてまけをみとめる）</span>"
+      ],
+      "answer": 1
+    },
+    {
+      "word": "capture",
+      "level": 2,
+      "choices": [
+        "<ruby>見逃す<rt>みのがす</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（みてもそのままにしておく）</span>",
+        "<ruby>解き放つ<rt>とき放つ</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（じゆうにしてあげる）</span>",
+        "<ruby>追い払う<rt>おいはらう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（あっちへいけととおざける）</span>",
+        "<ruby>捕らえる<rt>とらえる</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（つかまえてにがさない）</span>"
+      ],
+      "answer": 3
+    },
+    {
+      "word": "profit",
+      "level": 3,
+      "choices": [
+        "<ruby>損失<rt>そんしつ</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（そんをしてへってしまうこと）</span>",
+        "<ruby>利益<rt>りえき</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（もうけ/プラスになること）</span>",
+        "<ruby>税金<rt>ぜいきん</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（くににはらうおかね）</span>",
+        "<ruby>寄付<rt>きふ</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（こまっている人にあげるおかね）</span>"
+      ],
+      "answer": 1
+    },
+    {
+      "word": "purchase",
+      "level": 3,
+      "choices": [
+        "<ruby>購入する<rt>こうにゅうする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（おかねをはらってかうこと）</span>",
+        "<ruby>販売する<rt>はんばいする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（おみせのものをうること）</span>",
+        "<ruby>交換する<rt>こうかんする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（ものをとりかえること）</span>",
+        "<ruby>配達する<rt>はいたつする</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（いえまでにもつをとどける）</span>"
+      ],
+      "answer": 0
+    },
+    {
+      "word": "custom",
+      "level": 2,
+      "choices": [
+        "<ruby>市場<rt>しじょう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（ものがうりかいされるばしょ）</span>",
+        "<ruby>通貨<rt>つうか</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（おさつやコインなどのおかね）</span>",
+        "<ruby>税関<rt>ぜいかん</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（くうこうなどのにもつチェック）</span>",
+        "<ruby>国境<rt>こっきょう</rt></ruby><br><span class=\"text-sm md:text-base text-slate-500 font-normal mt-1\">（くにとくにのさかいめ）</span>"
+      ],
+      "answer": 2
+    } // 最後のデータの波カッコ閉じ。ここにはカンマは不要です
 ];
 
 const evolutionData = {
